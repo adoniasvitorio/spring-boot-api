@@ -28,6 +28,30 @@ public class AccountControllerTest {
 	public void setup() {}
 
 	@Test
+	public void testCreateAccountWithInvalidCPFValue() throws Exception {
+		Account newAccount = new Account("Adonias Vitorio", "invalid_cpf");
+		when(accountService.createAccount("Adonias Vitorio", "invalid_cpf")).thenThrow(new IllegalArgumentException("Invalid CPF"));
+
+		mockMvc.perform(post("/accounts")
+			.contentType("application/json")
+			.content(new ObjectMapper().writeValueAsString(newAccount)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.message").value("Invalid CPF"));
+	}
+
+	@Test
+	public void testCreateAccountWithInvalidCPFLength() throws Exception {
+		Account newAccount = new Account("Adonias Vitorio", "1234");
+		when(accountService.createAccount("Adonias Vitorio", "1234")).thenThrow(new IllegalArgumentException("Invalid CPF"));
+
+		mockMvc.perform(post("/accounts")
+			.contentType("application/json")
+			.content(new ObjectMapper().writeValueAsString(newAccount)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.message").value("Invalid CPF"));
+	}
+
+	@Test
 	public void testCreateAccount() throws Exception {
 		Account newAccount = new Account("Adonias Vitorio", "12345678901");
 		when(accountService.createAccount("Adonias Vitorio", "12345678901")).thenReturn(newAccount);
