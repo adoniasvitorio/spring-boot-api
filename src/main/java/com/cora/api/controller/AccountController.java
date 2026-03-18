@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/accounts")
@@ -25,5 +26,11 @@ public class AccountController {
   @GetMapping
   public List<Account> listAccounts() {
     return accountService.listAccounts();
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Map<String, String> handleIllegalArgument(IllegalArgumentException ex) {
+    return Map.of("message", ex.getMessage());
   }
 }

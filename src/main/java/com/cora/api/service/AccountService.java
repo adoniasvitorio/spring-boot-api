@@ -2,6 +2,7 @@ package com.cora.api.service;
 
 import com.cora.api.model.Account;
 import com.cora.api.repository.AccountRepository;
+import com.cora.api.util.CPFValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,9 @@ public class AccountService {
   }
 
   public Account createAccount(String name, String cpf) {
+    if (!CPFValidator.isValidCPF(cpf)) {
+      throw new IllegalArgumentException("Invalid CPF");
+    }
     Account account = new Account(name, cpf);
     return accountRepository.save(account);
   }
