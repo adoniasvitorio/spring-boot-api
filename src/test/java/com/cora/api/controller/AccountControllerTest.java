@@ -1,5 +1,6 @@
 package com.cora.api.controller;
 
+import com.cora.api.exception.DuplicateAccountException;
 import com.cora.api.model.Account;
 import com.cora.api.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,9 +29,23 @@ public class AccountControllerTest {
 	public void setup() {}
 
 	@Test
+	public void testCreateAccountWithDuplicateCPF() throws Exception {
+		Account newAccount = new Account("Adonias Vitorio", "12345678901");
+		when(accountService.createAccount("Adonias Vitorio", "12345678901"))
+			.thenThrow(new DuplicateAccountException("12345678901"));
+
+		mockMvc.perform(post("/accounts")
+			.contentType("application/json")
+			.content(new ObjectMapper().writeValueAsString(newAccount)))
+			.andExpect(status().isConflict())
+			.andExpect(jsonPath("$.message").value("CPF already exists: 12345678901"));
+	}
+
+	@Test
 	public void testCreateAccountWithInvalidCPFValue() throws Exception {
 		Account newAccount = new Account("Adonias Vitorio", "invalid_cpf");
-		when(accountService.createAccount("Adonias Vitorio", "invalid_cpf")).thenThrow(new IllegalArgumentException("Invalid CPF"));
+		when(accountService.createAccount("Adonias Vitorio", "invalid_cpf"))
+			.thenThrow(new IllegalArgumentException("Invalid CPF"));
 
 		mockMvc.perform(post("/accounts")
 			.contentType("application/json")
@@ -42,7 +57,8 @@ public class AccountControllerTest {
 	@Test
 	public void testCreateAccountWithInvalidCPFLength() throws Exception {
 		Account newAccount = new Account("Adonias Vitorio", "1234");
-		when(accountService.createAccount("Adonias Vitorio", "1234")).thenThrow(new IllegalArgumentException("Invalid CPF"));
+		when(accountService.createAccount("Adonias Vitorio", "1234"))
+			.thenThrow(new IllegalArgumentException("Invalid CPF"));
 
 		mockMvc.perform(post("/accounts")
 			.contentType("application/json")
@@ -54,7 +70,8 @@ public class AccountControllerTest {
 	@Test
 	public void testCreateAccount() throws Exception {
 		Account newAccount = new Account("Adonias Vitorio", "12345678901");
-		when(accountService.createAccount("Adonias Vitorio", "12345678901")).thenReturn(newAccount);
+		when(accountService.createAccount("Adonias Vitorio", "12345678901"))
+			.thenReturn(newAccount);
 
 		mockMvc.perform(post("/accounts")
 			.contentType("application/json")
@@ -67,7 +84,9 @@ public class AccountControllerTest {
 	@Test
 	public void testListAccounts() throws Exception {
 		Account account = new Account("Adonias Vitorio", "12345678901");
-		when(accountService.listAccounts()).thenReturn(java.util.Collections.singletonList(account));
+		when(accountService.listAccounts())
+			.thenReturn(java.util.Collections
+			.singletonList(account));
 
 		mockMvc.perform(get("/accounts"))
 			.andExpect(status().isOk())
