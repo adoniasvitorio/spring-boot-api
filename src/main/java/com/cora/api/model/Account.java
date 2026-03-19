@@ -7,42 +7,43 @@ import jakarta.persistence.Id;
 
 @Entity
 public class Account {
-  
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
 
-  private String name;
-  private String cpf;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  public Account() {}
+    private String name;
+    private String cpf;
 
-  public Account(String name, String cpf) {
-    this.name = name;
-    this.cpf = cpf;
-  }
+    public Account() {
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public Account(String name, String cpf) {
+        this.name = name;
+        this.cpf = cpf;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getCPF() {
-    return cpf;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setCPF(String cpf) {
-    this.cpf = cpf;
-  }
+    public String getCPF() {
+        return cpf;
+    }
+
+    public void setCPF(String cpf) {
+        this.cpf = cpf;
+    }
 }
