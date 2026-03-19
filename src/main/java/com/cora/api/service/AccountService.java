@@ -1,5 +1,6 @@
 package com.cora.api.service;
 
+import com.cora.api.exception.DuplicateAccountException;
 import com.cora.api.model.Account;
 import com.cora.api.repository.AccountRepository;
 import com.cora.api.util.CPFValidator;
@@ -19,6 +20,11 @@ public class AccountService {
     if (!CPFValidator.isValidCPF(cpf)) {
       throw new IllegalArgumentException("Invalid CPF");
     }
+
+    if (accountRepository.existsByCpf(cpf)) {
+      throw new DuplicateAccountException(cpf);
+    }
+
     Account account = new Account(name, cpf);
     return accountRepository.save(account);
   }

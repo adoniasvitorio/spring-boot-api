@@ -1,5 +1,6 @@
 package com.cora.api.controller;
 
+import com.cora.api.exception.DuplicateAccountException;
 import com.cora.api.model.Account;
 import com.cora.api.service.AccountService;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,12 @@ public class AccountController {
   @ExceptionHandler(IllegalArgumentException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Map<String, String> handleIllegalArgument(IllegalArgumentException ex) {
+    return Map.of("message", ex.getMessage());
+  }
+
+  @ExceptionHandler(DuplicateAccountException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  public Map<String, String> handleDuplicateAccount(DuplicateAccountException ex) {
     return Map.of("message", ex.getMessage());
   }
 }
