@@ -18,7 +18,7 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public Account createAccount(String name, String cpf) {
+    public Account createAccount(String name, String cpf, String referalCode) {
         if (!CPFValidator.isValidCPF(cpf)) {
             throw new IllegalArgumentException("Invalid CPF");
         }
@@ -26,8 +26,8 @@ public class AccountService {
         if (accountRepository.existsByCpf(cpf)) {
             throw new DuplicateAccountException(cpf);
         }
-
-        Account account = new Account(name, cpf);
+        
+        Account account = new Account(name, cpf,10.0);
         return accountRepository.save(account);
     }
 
